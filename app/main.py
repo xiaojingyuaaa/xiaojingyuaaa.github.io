@@ -36,15 +36,16 @@ def on_startup():
     """
     create_db_and_tables()
 
-# 添加CORS中间件，允许跨域请求
-# 这对于前后端分离的架构至关重要
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # 在开发中允许所有源，生产环境中应进行限制
-    allow_credentials=True,
-    allow_methods=["*"],  # 允许所有HTTP方法 (GET, POST, etc.)
-    allow_headers=["*"],  # 允许所有HTTP头
-)
+# CORS（跨域资源共享）策略现在由Nginx反向代理处理。
+# 因此，不再需要在FastAPI应用层添加CORS中间件。
+#
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 # 包含API路由
 app.include_router(endpoints.router, prefix="/api", tags=["聊天与会话管理"])
