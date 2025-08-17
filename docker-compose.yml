@@ -1,14 +1,26 @@
 version: '3.8'
 
 services:
+  # Nginx Reverse Proxy Service
+  nginx:
+    image: nginx:latest
+    container_name: rag_nginx_proxy
+    ports:
+      - "80:80" # 将主机的80端口映射到Nginx容器的80端口
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro # 挂载Nginx配置文件（只读）
+    depends_on:
+      - backend # 确保Nginx在后端服务启动后才启动
+    restart: always
+
   # FastAPI Backend Service
   backend:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: rag_backend_service
-    ports:
-      - "8000:8000"
+    # 'ports' section is removed. The backend is no longer exposed directly to the host.
+    # It is only accessible from within the Docker network by the Nginx service.
     volumes:
       # Mount local directories into the container for data persistence.
       # This ensures that your knowledge base and vector store are not lost
@@ -20,6 +32,7 @@ services:
       - ./app:/app/app
     env_file:
       - .env
+    restart: unless-stopped
     # The --reload flag in the Dockerfile's CMD will use this volume to auto-reload on code changes.
     # For production, you should remove the code volume mount and the --reload flag,
     # and rely on the code copied into the image at build time.

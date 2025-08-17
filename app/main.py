@@ -5,54 +5,54 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api import endpoints
 from app.db.database import Base, engine
 
-# Configure logging
+# 配置日志记录
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def create_db_and_tables():
     """
-    Creates the database and all necessary tables defined in the ORM models.
-    This function is called on application startup.
+    创建数据库和所有在ORM模型中定义的表。
+    这个函数会在应用启动时被调用。
     """
-    logging.info("Creating database and tables...")
+    logging.info("正在创建数据库和表...")
     try:
         Base.metadata.create_all(bind=engine)
-        logging.info("Database and tables created successfully.")
+        logging.info("数据库和表已成功创建。")
     except Exception as e:
-        logging.error(f"Error creating database tables: {e}", exc_info=True)
+        logging.error(f"创建数据库表时出错: {e}", exc_info=True)
         raise
 
-# Create the FastAPI app instance
+# 创建FastAPI应用实例
 app = FastAPI(
-    title="Enterprise RAG API",
-    description="An API for a company's internal smart assistant, powered by RAG.",
-    version="1.0.0",
+    title="企业级RAG智能客服API",
+    description="一个为公司内部智能客服助手提供支持的API，由RAG技术驱动。",
+    version="1.1.0", # 版本升级
 )
 
-# Add a startup event handler
+# 应用启动时执行的事件处理器
 @app.on_event("startup")
 def on_startup():
     """
-    Event handler for application startup.
+    应用启动时的事件处理函数。
     """
     create_db_and_tables()
 
-# Add CORS middleware to allow cross-origin requests
-# This is crucial for a decoupled frontend
+# 添加CORS中间件，允许跨域请求
+# 这对于前后端分离的架构至关重要
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for development. Restrict in production.
+    allow_origins=["*"],  # 在开发中允许所有源，生产环境中应进行限制
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],  # 允许所有HTTP方法 (GET, POST, etc.)
+    allow_headers=["*"],  # 允许所有HTTP头
 )
 
-# Include the API router
-app.include_router(endpoints.router, prefix="/api", tags=["Chat and Conversations"])
+# 包含API路由
+app.include_router(endpoints.router, prefix="/api", tags=["聊天与会话管理"])
 
-# Root endpoint for health checks
-@app.get("/", tags=["Health Check"])
+# 用于健康检查的根节点
+@app.get("/", tags=["健康检查"])
 def read_root():
     """
-    Root endpoint to check if the service is running.
+    根节点，用于检查服务是否正在运行。
     """
-    return {"status": "ok", "message": "Welcome to the Enterprise RAG API!"}
+    return {"status": "ok", "message": "欢迎使用企业级RAG智能客服API!"}

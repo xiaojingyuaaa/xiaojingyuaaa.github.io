@@ -1,8 +1,8 @@
 from langchain.prompts import PromptTemplate
 
-# This prompt is designed to guide the LLM to answer based on the provided context.
-# It sets the persona of the assistant and gives clear instructions on how to behave.
-# It is written in Chinese, as per the user's request for a Chinese-speaking assistant.
+# 这个Prompt模板旨在引导LLM基于提供的上下文来回答问题。
+# 它为AI助手设定了角色，并给出了明确的行为指示。
+# 根据用户的要求，Prompt使用中文编写。
 
 qa_template_str = """
 你是一个耐心、热情、专业的公司内部智能客服小助手。
@@ -26,10 +26,10 @@ qa_template_str = """
 QA_PROMPT = PromptTemplate.from_template(qa_template_str)
 
 
-# This prompt is used to rephrase a follow-up question into a standalone question,
-# using the chat history as context. This is a crucial step in making the chatbot conversational.
-# For example, if the user asks "What is it?" after a previous answer about "Project X",
-# this prompt helps the model rephrase the question to "What is Project X?".
+# 这个Prompt用于在多轮对话中，将一个后续问题（可能依赖于上下文）改写成一个独立的、
+# 无需聊天历史就能理解的问题。这是实现对话式聊天机器人的关键一步。
+# 例如，如果用户在得到关于“项目X”的回答后问“它是什么？”，
+# 这个Prompt会帮助模型将问题改写为“项目X是什么？”。
 
 contextualize_q_system_prompt = """
 给定一段聊天历史和一个后续问题，这个后续问题可能引用了聊天历史中的上下文。

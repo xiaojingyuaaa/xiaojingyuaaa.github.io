@@ -8,10 +8,11 @@ from langchain_community.document_loaders import (
 )
 from langchain.docstore.document import Document
 
-# Configure logging
+# 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Mapping from file extension to specific loader
+# 定义文件扩展名到特定加载器的映射
+# 这使得我们可以根据文件类型使用最优化的加载器
 LOADER_MAPPING = {
     ".md": (UnstructuredMarkdownLoader, {}),
     ".txt": (UnstructuredFileLoader, {}),
@@ -24,33 +25,36 @@ LOADER_MAPPING = {
 
 def load_documents(docs_path: str) -> List[Document]:
     """
-    Loads all documents from the specified directory, using different loaders
-    for different file types.
+    从指定目录加载所有支持的文档。
+
+    遍历目录下的所有文件，根据文件扩展名选择合适的加载器进行加载。
 
     Args:
-        docs_path (str): The path to the directory containing the documents.
+        docs_path (str): 包含文档的目录路径。
 
     Returns:
-        List[Document]: A list of loaded Document objects.
+        List[Document]: 加载后的Document对象列表。
     """
     path = Path(docs_path)
     if not path.is_dir():
-        logging.error(f"The path {docs_path} is not a valid directory.")
+        logging.error(f"路径 {docs_path} 不是一个有效的目录。")
         return []
 
     loaded_documents = []
+    # 递归地遍历目录下的所有文件
     for file_path in path.rglob("*.*"):
         ext = file_path.suffix.lower()
         if ext in LOADER_MAPPING:
             loader_class, loader_args = LOADER_MAPPING[ext]
             try:
-                logging.info(f"Loading file: {file_path}")
+                logging.info(f"正在加载文件: {file_path}")
                 loader = loader_class(str(file_path), **loader_args)
+                # 调用加载器的load方法，并将结果扩展到列表中
                 loaded_documents.extend(loader.load())
             except Exception as e:
-                logging.error(f"Failed to load file {file_path}: {e}", exc_info=True)
+                logging.error(f"加载文件 {file_path} 失败: {e}", exc_info=True)
         else:
-            logging.warning(f"Unsupported file type: {file_path}. Skipping.")
+            logging.warning(f"不支持的文件类型: {file_path}，已跳过。")
 
-    logging.info(f"Successfully loaded {len(loaded_documents)} documents.")
+    logging.info(f"成功加载 {len(loaded_documents)} 个文档块。")
     return loaded_documents
