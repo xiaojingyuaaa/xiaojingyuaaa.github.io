@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # FastAPI Backend Service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag_backend_service
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount local directories into the container for data persistence.
+      # This ensures that your knowledge base and vector store are not lost
+      # when the container is stopped or removed.
+      - ./data:/app/data
+      - ./vector_store:/app/vector_store
+      # For development: mount the source code to enable hot-reloading.
+      # Any changes in your local './app' directory will be reflected inside the container.
+      - ./app:/app/app
+    env_file:
+      - .env
+    # The --reload flag in the Dockerfile's CMD will use this volume to auto-reload on code changes.
+    # For production, you should remove the code volume mount and the --reload flag,
+    # and rely on the code copied into the image at build time.
+
+  # --- vLLM Service Placeholder ---
+  # This is an example of how you could run the Qwen model in another container.
+  # This requires a machine with a suitable NVIDIA GPU and drivers.
+  # To use this, you would uncomment it and adjust as needed.
+  #
+  # vllm:
+  #   image: vllm/vllm-openai:latest # Use an official vLLM image
+  #   container_name: vllm_qwen_service
+  #   restart: always
+  #   ports:
+  #     # We map vLLM's internal port 8000 to the host's 8001 to avoid conflict with our backend.
+  #     # Ensure VLLM_API_BASE in your .env file is updated to http://localhost:8001/v1
+  #     - "8001:8000"
+  #   volumes:
+  #     # Mount a local cache to speed up model downloads on subsequent runs
+  #     - ~/.cache/huggingface:/root/.cache/huggingface
+  #   environment:
+  #     # Pass the model name from the .env file to the container
+  #     - MODEL_NAME=${LLM_MODEL_NAME}
+  #   # This section is crucial for giving the container access to the GPU
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1 # Requesting one GPU
+  #             capabilities: [gpu]
+
+networks:
+  default:
+    driver: bridge

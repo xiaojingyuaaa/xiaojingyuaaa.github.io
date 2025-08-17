@@ -1,0 +1,33 @@
+# Web Framework
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+
+# Database
+sqlalchemy
+
+# LangChain
+langchain
+langchain-community
+
+# Vector Store
+# Use faiss-gpu if you have a CUDA-enabled GPU and drivers
+faiss-cpu
+
+# LLM Serving (for local Qwen model)
+# Ensure you have a compatible CUDA version for vLLM
+vllm
+
+# Document Loaders
+unstructured[local-inference]
+pypdf
+openpyxl
+
+# Embedding Models
+sentence-transformers
+
+# Core ML & Transformers dependencies
+torch
+accelerate
+tiktoken
