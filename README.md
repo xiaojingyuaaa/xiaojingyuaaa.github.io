@@ -1,4 +1,4 @@
-# 企业级RAG智能客服助手 (Enterprise RAG AI Assistant)
+# 企业级RAG智能客服助手
 
 本项目是一个完整的、企业级的解决方案，旨在利用RAG（Retrieval-Augmented Generation，检索增强生成）模式，为您打造一个功能强大的公司内部AI智能客服助手。
 
@@ -59,7 +59,7 @@
 
 1.  **Git**: 用于从代码仓库克隆本项目。
 2.  **Docker & Docker Compose**: 用于运行整个应用。请确保您已正确安装并启动了Docker。
-3.  **NVIDIA GPU & 驱动 (vLLM必需)**: 您需要一台配备了NVIDIA GPU（推荐安培架构或更新型号）的服务器来运行Qwen大语言模型，并确保已安装相应的NVIDIA驱动。
+3.  **NVIDIA GPU & 驱动 (vLLM必需)**: 您需要一台配备了NVIDIA GPU的服务器来运行Qwen大语言模型，并确保已安装相应的NVIDIA驱动。
 
 ### 步骤 1: 克隆项目代码
 
